@@ -111,22 +111,18 @@ const HeroSection = () => {
               <span className="text-sm font-medium" style={{ color: "#5DCAA5" }}>Plataforma verificada · México</span>
             </div>
 
-            <h1 className="font-headline text-hero leading-[1.05] tracking-tight" style={{ transform: `translateY(${-parallaxY * 0.3}px)` }}>
-              <span className="block anim-h1-line1 text-white">Conectamos residuos</span>
-              <span className="block anim-h1-line2 text-white">con{" "}
-                <span className="inline-block overflow-hidden align-bottom" style={{ height: "1.1em" }}>
-                  <span
-                    className="inline-flex flex-col transition-transform duration-700 ease-in-out"
-                    style={{
-                      color: "#1D9E75",
-                      transform: `translateY(-${rotatingWordIndex * 1.1}em)`,
-                    }}
-                  >
-                    {rotatingWords.map((word, i) => (
-                      <span key={i} className="block" style={{ height: "1.1em", lineHeight: "1.1em" }}>{word}</span>
-                    ))}
-                  </span>
-                </span>
+            <h1 className="font-headline leading-[1.05] tracking-tight" style={{ fontSize: "clamp(36px, 5vw, 64px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
+              <span className="block anim-h1-line1 text-white">Conectamos residuos con</span>
+              <span
+                className="block anim-h1-line2 transition-all duration-500 ease-in-out"
+                style={{
+                  color: "#1D9E75",
+                  filter: isTransitioning ? "blur(8px)" : "blur(0px)",
+                  opacity: isTransitioning ? 0.3 : 1,
+                  transform: isTransitioning ? "translateY(8px)" : "translateY(0)",
+                }}
+              >
+                {rotatingWords[rotatingWordIndex]}
               </span>
             </h1>
 
