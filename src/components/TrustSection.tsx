@@ -33,7 +33,7 @@ const TrustSection = () => {
   const bigNum = useCountUp(100, 1800, isVisible);
 
   return (
-    <section id="confianza" className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "#0a1a0f" }}>
+    <section id="confianza" className="relative py-20 md:py-28 overflow-hidden bg-dot-pattern" style={{ backgroundColor: "#0a1a0f" }}>
       {/* Left image — verification facility */}
       <div className="absolute left-0 top-0 bottom-0 w-[45%] hidden lg:block pointer-events-none overflow-visible">
         <img
