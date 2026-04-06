@@ -70,7 +70,7 @@ export default function RecolectoraDocumentos() {
     queryFn: async () => {
       const { data } = await supabase
         .from('registration_requests')
-        .select('id, numero_resolucion_licencia, autoridad_ambiental')
+        .select('id, numero_resolucion_licencia, autoridad_ambiental, razon_social, nit, representante_legal')
         .eq('user_id', user!.id)
         .eq('role', 'recolectora')
         .eq('status', 'aprobada')
