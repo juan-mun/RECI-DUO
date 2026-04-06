@@ -94,7 +94,8 @@ const HeroSection = () => {
         <img
           src={heroImg}
           alt="Ciudad isométrica de gestión de residuos"
-          className="absolute top-1/2 -translate-y-1/2 right-0 w-full h-auto max-w-none object-contain"
+          className="absolute top-1/2 -translate-y-1/2 right-0 h-auto max-w-none object-contain"
+          style-width="110%"
           style={{
             mixBlendMode: "screen",
             WebkitMaskImage: "linear-gradient(to left, black 50%, transparent 95%)",
