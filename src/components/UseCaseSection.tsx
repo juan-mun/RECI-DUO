@@ -2,22 +2,25 @@ import { Quote } from "lucide-react";
 
 const UseCaseSection = () => {
   return (
-    <section className="py-20 md:py-28 bg-eco-light">
+    <section className="py-20 md:py-28" style={{ backgroundColor: "hsl(150, 30%, 96%)" }}>
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <div className="bg-card rounded-3xl p-8 md:p-12 shadow-card">
             <div className="flex items-center gap-3 mb-6">
-              <div className="eco-gradient-bg rounded-full p-2">
-                <Quote className="h-5 w-5 text-primary-foreground" />
+              <div className="rounded-full p-2" style={{ backgroundColor: "hsl(105, 35%, 38%)" }}>
+                <Quote className="h-5 w-5" style={{ color: "hsl(0, 0%, 100%)" }} />
               </div>
-              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Ejemplo real</span>
+              <span className="text-sm font-semibold uppercase tracking-wider" style={{ color: "hsl(105, 35%, 38%)" }}>Ejemplo real</span>
             </div>
-            <p className="text-lg md:text-xl text-foreground leading-relaxed mb-6">
+            <p className="text-lg md:text-xl leading-relaxed mb-6" style={{ color: "hsl(105, 25%, 14%)" }}>
               Un taller automotriz necesita desechar aceite usado. A través de la plataforma encuentra una empresa certificada que recoge y trata este residuo de forma ambientalmente responsable.
             </p>
-            <div className="flex items-center gap-3 rounded-xl bg-primary/5 p-4 border border-primary/10">
-              <div className="h-2 w-2 rounded-full eco-gradient-bg flex-shrink-0" />
-              <p className="text-sm font-medium text-primary">
+            <div
+              className="flex items-center gap-3 rounded-xl p-4 border"
+              style={{ backgroundColor: "hsl(105, 35%, 38% / 0.05)", borderColor: "hsl(105, 35%, 38% / 0.1)" }}
+            >
+              <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: "hsl(105, 35%, 38%)" }} />
+              <p className="text-sm font-medium" style={{ color: "hsl(105, 35%, 38%)" }}>
                 Ahorra tiempo, cumple la ley y protege el medio ambiente
               </p>
             </div>
