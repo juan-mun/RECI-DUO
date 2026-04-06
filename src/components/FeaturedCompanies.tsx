@@ -125,7 +125,7 @@ const FeaturedCompanies = () => {
             >
               {/* Logo banner area - Fiverr style */}
               <div
-                className="relative h-36 flex items-center justify-center"
+                className="relative h-44 flex items-center justify-center"
                 style={{ backgroundColor: "hsl(150, 30%, 96%)" }}
               >
                 <img
@@ -134,7 +134,7 @@ const FeaturedCompanies = () => {
                   loading="lazy"
                   width={512}
                   height={512}
-                  className="h-24 w-24 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
+                  className="h-28 w-28 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                 />
                 {company.verified && (
                   <div
