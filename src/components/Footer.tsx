@@ -2,7 +2,7 @@ import { Leaf } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer style={{ backgroundColor: "#030a05", borderTop: "0.5px solid rgba(29,158,117,0.1)" }} className="py-16">
+    <footer style={{ backgroundColor: "#030a05", borderTop: "0.5px solid rgba(29,158,117,0.1)" }} className="relative py-16 bg-dot-pattern">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div>
