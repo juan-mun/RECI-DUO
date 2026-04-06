@@ -22,7 +22,7 @@ function useCountUp(target: number, duration = 1800, isVisible = false) {
   return count;
 }
 
-const rotatingWords = ["soluciones responsables", "soluciones sostenibles", "soluciones automatizadas", "soluciones certificadas"];
+const rotatingWords = ["Responsablemente.", "Sosteniblemente.", "Certificadamente."];
 
 const HeroSection = () => {
   const statsRef = useRef<HTMLDivElement>(null);
@@ -76,6 +76,13 @@ const HeroSection = () => {
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundColor: "#0a1a0f" }}>
+      {/* Grid pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.07]"
+        style={{
+          backgroundImage: "linear-gradient(rgba(29,158,117,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(29,158,117,0.3) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
       {/* Decorative blurred orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ transform: `translateY(${parallaxY * 0.5}px)` }}>
         <div className="absolute top-20 left-[10%] w-32 h-32 rounded-full opacity-[0.06]" style={{ background: "hsl(160,72%,37%)", filter: "blur(40px)" }} />
@@ -111,13 +118,13 @@ const HeroSection = () => {
               <span className="text-sm font-medium" style={{ color: "#5DCAA5" }}>Plataforma verificada · México</span>
             </div>
 
-            <h1 className="font-headline leading-[1.1] tracking-tight max-w-[520px]" style={{ fontSize: "clamp(32px, 4.5vw, 56px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
-              <span className="block anim-h1-line1 text-white">Conectamos</span>
-              <span className="block anim-h1-line1 text-white">residuos con</span>
+            <h1 className="font-headline leading-[1.05] tracking-tight" style={{ fontSize: "clamp(40px, 5.5vw, 72px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
+              <span className="block anim-h1-line1 text-white">Residuos.</span>
+              <span className="block anim-h1-line2" style={{ color: "#1D9E75" }}>Gestionados.</span>
               <span
-                className="block anim-h1-line2 transition-all duration-500 ease-in-out"
+                className="block anim-h1-line3 transition-all duration-500 ease-in-out"
                 style={{
-                  color: "#1D9E75",
+                  color: "hsl(150,15%,55%)",
                   filter: isTransitioning ? "blur(8px)" : "blur(0px)",
                   opacity: isTransitioning ? 0.3 : 1,
                   transform: isTransitioning ? "translateY(8px)" : "translateY(0)",

@@ -14,7 +14,7 @@ const BenefitsSection = () => {
   const { ref, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <section id="beneficios" className="py-20 md:py-28" style={{ backgroundColor: "#050f07" }}>
+    <section id="beneficios" className="relative py-20 md:py-28 bg-grid-pattern" style={{ backgroundColor: "#050f07" }}>
       <div className="container mx-auto px-4" ref={ref}>
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: "#5DCAA5" }}>POR QUÉ RECI-DUO</p>

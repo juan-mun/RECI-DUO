@@ -14,7 +14,7 @@ const HowItWorks = () => {
   const { ref, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <section id="como-funciona" className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "#0d1f12" }}>
+    <section id="como-funciona" className="relative py-20 md:py-28 overflow-hidden bg-grid-pattern" style={{ backgroundColor: "#0d1f12" }}>
       {/* Right image with mix-blend-mode screen */}
       <div className="absolute right-0 top-0 bottom-0 w-[50%] hidden lg:block pointer-events-none overflow-visible">
         <img

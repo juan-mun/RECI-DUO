@@ -17,7 +17,7 @@ const FeaturedCompanies = () => {
   const { ref, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <section id="gestores" className="py-20 md:py-28" style={{ backgroundColor: "#0d1f12" }}>
+    <section id="gestores" className="relative py-20 md:py-28 bg-grid-pattern" style={{ backgroundColor: "#0d1f12" }}>
       <div className="container mx-auto px-4" ref={ref}>
         <div className={`text-center mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: "#5DCAA5" }}>GESTORES ACTIVOS</p>
