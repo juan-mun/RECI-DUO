@@ -1,11 +1,18 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const CTASection = () => {
+  const { ref, isVisible } = useScrollAnimation(0.2);
+
   return (
     <section className="py-20 md:py-28 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="eco-gradient-bg rounded-3xl p-10 md:p-16 text-center">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div
+          className={`eco-gradient-bg rounded-3xl p-10 md:p-16 text-center transition-all duration-700 ${
+            isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-8"
+          }`}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
             Únete a la red sostenible
           </h2>

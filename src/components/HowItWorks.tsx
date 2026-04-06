@@ -1,4 +1,6 @@
 import { Building2, FileCheck, ShieldCheck, Handshake, Recycle } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import greenCityBg from "@/assets/green-city-bg.jpeg";
 
 const steps = [
   { icon: Building2, title: "Registra tu empresa", desc: "Crea tu perfil indicando si generas o gestionas residuos." },
@@ -9,10 +11,23 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const { ref, isVisible } = useScrollAnimation(0.1);
+
   return (
-    <section id="como-funciona" className="py-20 md:py-28" style={{ backgroundColor: "hsl(90, 30%, 95%)" }}>
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="como-funciona" className="py-20 md:py-28 relative overflow-hidden">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${greenCityBg})`, opacity: 0.12 }}
+      />
+      <div className="absolute inset-0" style={{ backgroundColor: "hsl(90, 30%, 95%)", opacity: 0.88 }} />
+
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+        <div
+          className={`text-center mb-16 transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "hsl(105, 25%, 14%)" }}>Cómo funciona</h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: "hsl(105, 15%, 27%)" }}>
             Un proceso simple y seguro para conectar empresas con gestores certificados.
@@ -20,9 +35,15 @@ const HowItWorks = () => {
         </div>
         <div className="grid md:grid-cols-5 gap-6">
           {steps.map((step, i) => (
-            <div key={i} className="relative flex flex-col items-center text-center group">
+            <div
+              key={i}
+              className={`relative flex flex-col items-center text-center group transition-all duration-700 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              style={{ transitionDelay: isVisible ? `${i * 120}ms` : "0ms" }}
+            >
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-105 transition-transform"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-110 transition-transform"
                 style={{ backgroundColor: "hsl(105, 35%, 38%)" }}
               >
                 <step.icon className="h-7 w-7" style={{ color: "hsl(0, 0%, 100%)" }} />

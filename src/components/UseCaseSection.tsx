@@ -1,10 +1,17 @@
 import { Quote } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const UseCaseSection = () => {
+  const { ref, isVisible } = useScrollAnimation(0.2);
+
   return (
     <section className="py-20 md:py-28" style={{ backgroundColor: "hsl(150, 30%, 96%)" }}>
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div
+          className={`max-w-3xl mx-auto transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95"
+          }`}
+        >
           <div className="bg-card rounded-3xl p-8 md:p-12 shadow-card">
             <div className="flex items-center gap-3 mb-6">
               <div className="rounded-full p-2" style={{ backgroundColor: "hsl(105, 35%, 38%)" }}>

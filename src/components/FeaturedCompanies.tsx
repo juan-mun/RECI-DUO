@@ -1,5 +1,6 @@
 import { MapPin, ShieldCheck, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 import quimicleanLogo from "@/assets/logos/quimiclean.png";
 import metalreciclaLogo from "@/assets/logos/metalrecicla.png";
@@ -90,44 +91,42 @@ const companies: Company[] = [
 ];
 
 const FeaturedCompanies = () => {
+  const { ref, isVisible } = useScrollAnimation(0.1);
+
   return (
     <section className="py-20 md:py-28" style={{ backgroundColor: "hsl(90, 30%, 95%)" }}>
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div
+          className={`flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <div>
-            <h2
-              className="text-3xl md:text-4xl font-bold mb-2"
-              style={{ color: "hsl(105, 25%, 14%)" }}
-            >
+            <h2 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "hsl(105, 25%, 14%)" }}>
               Empresas que trabajan con nosotros
             </h2>
             <p style={{ color: "hsl(105, 15%, 27%)" }} className="text-lg">
               Gestores verificados que ya confían en nuestra plataforma.
             </p>
           </div>
-          <a
-            href="#"
-            className="text-sm font-medium hover:underline"
-            style={{ color: "hsl(105, 35%, 38%)" }}
-          >
+          <a href="#" className="text-sm font-medium hover:underline" style={{ color: "hsl(105, 35%, 38%)" }}>
             Ver todos los gestores →
           </a>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {companies.map((company) => (
+          {companies.map((company, i) => (
             <div
               key={company.name}
-              className="bg-card rounded-xl border border-border/40 overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1"
+              className={`bg-card rounded-xl border border-border/40 overflow-hidden cursor-pointer group transition-all duration-700 hover:-translate-y-1 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
               style={{
                 boxShadow: "0 1px 4px hsl(105 25% 14% / 0.06), 0 6px 20px -6px hsl(105 25% 14% / 0.08)",
+                transitionDelay: isVisible ? `${i * 100}ms` : "0ms",
               }}
             >
-              {/* Logo banner area - Fiverr style */}
-              <div
-                className="relative h-56 flex items-center justify-center"
-                style={{ backgroundColor: "hsl(150, 30%, 96%)" }}
-              >
+              <div className="relative h-56 flex items-center justify-center" style={{ backgroundColor: "hsl(150, 30%, 96%)" }}>
                 <img
                   src={company.logo}
                   alt={`Logo de ${company.name}`}
@@ -139,66 +138,34 @@ const FeaturedCompanies = () => {
                 {company.verified && (
                   <div
                     className="absolute top-3 right-3 flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full"
-                    style={{
-                      backgroundColor: "hsl(105, 35%, 38%)",
-                      color: "hsl(0, 0%, 100%)",
-                    }}
+                    style={{ backgroundColor: "hsl(105, 35%, 38%)", color: "hsl(0, 0%, 100%)" }}
                   >
                     <ShieldCheck className="h-3 w-3" />
                     Verificado
                   </div>
                 )}
               </div>
-
-              {/* Card body */}
               <div className="p-4">
-                {/* Company name & tagline */}
-                <h3
-                  className="font-semibold text-sm mb-1 transition-colors group-hover:text-primary"
-                  style={{ color: "hsl(105, 25%, 14%)" }}
-                >
+                <h3 className="font-semibold text-sm mb-1 transition-colors group-hover:text-primary" style={{ color: "hsl(105, 25%, 14%)" }}>
                   {company.name}
                 </h3>
-                <p className="text-xs mb-3 line-clamp-2" style={{ color: "hsl(105, 12%, 45%)" }}>
-                  {company.tagline}
-                </p>
-
-                {/* Residues tags */}
+                <p className="text-xs mb-3 line-clamp-2" style={{ color: "hsl(105, 12%, 45%)" }}>{company.tagline}</p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {company.residues.map((r) => (
-                    <Badge
-                      key={r}
-                      variant="secondary"
-                      className="text-[11px] font-normal border-0"
-                      style={{
-                        backgroundColor: "hsl(150, 30%, 96%)",
-                        color: "hsl(105, 15%, 27%)",
-                      }}
-                    >
+                    <Badge key={r} variant="secondary" className="text-[11px] font-normal border-0" style={{ backgroundColor: "hsl(150, 30%, 96%)", color: "hsl(105, 15%, 27%)" }}>
                       {r}
                     </Badge>
                   ))}
                 </div>
-
-                {/* Divider */}
                 <div className="border-t border-border/40 pt-3 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <MapPin className="h-3 w-3" style={{ color: "hsl(105, 12%, 45%)" }} />
-                    <span className="text-xs" style={{ color: "hsl(105, 12%, 45%)" }}>
-                      {company.location}
-                    </span>
+                    <span className="text-xs" style={{ color: "hsl(105, 12%, 45%)" }}>{company.location}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    <span
-                      className="text-sm font-bold"
-                      style={{ color: "hsl(105, 25%, 14%)" }}
-                    >
-                      {company.rating}
-                    </span>
-                    <span className="text-xs" style={{ color: "hsl(105, 12%, 45%)" }}>
-                      ({company.reviews})
-                    </span>
+                    <span className="text-sm font-bold" style={{ color: "hsl(105, 25%, 14%)" }}>{company.rating}</span>
+                    <span className="text-xs" style={{ color: "hsl(105, 12%, 45%)" }}>({company.reviews})</span>
                   </div>
                 </div>
               </div>
