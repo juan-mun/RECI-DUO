@@ -76,6 +76,13 @@ const HeroSection = () => {
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundColor: "#0a1a0f" }}>
+      {/* Grid pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.07]"
+        style={{
+          backgroundImage: "linear-gradient(rgba(29,158,117,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(29,158,117,0.3) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
       {/* Decorative blurred orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ transform: `translateY(${parallaxY * 0.5}px)` }}>
         <div className="absolute top-20 left-[10%] w-32 h-32 rounded-full opacity-[0.06]" style={{ background: "hsl(160,72%,37%)", filter: "blur(40px)" }} />
