@@ -30,11 +30,16 @@ const HeroSection = () => {
   const [statsVisible, setStatsVisible] = useState(false);
   const [parallaxY, setParallaxY] = useState(0);
   const [rotatingWordIndex, setRotatingWordIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRotatingWordIndex((prev) => (prev + 1) % rotatingWords.length);
-    }, 3000);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setRotatingWordIndex((prev) => (prev + 1) % rotatingWords.length);
+        setIsTransitioning(false);
+      }, 400);
+    }, 7000);
     return () => clearInterval(interval);
   }, []);
 
