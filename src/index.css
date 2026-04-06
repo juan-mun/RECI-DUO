@@ -70,47 +70,61 @@
   }
 }
 
+/* ── Page-load animation sequence (spec timings) ── */
 @layer utilities {
-  .animate-fade-up {
-    animation: fadeUp 0.6s ease-out both;
-  }
-  .animate-fade-up-delay {
-    animation: fadeUp 0.6s ease-out 0.15s both;
-  }
-  .animate-fade-up-delay-2 {
-    animation: fadeUp 0.6s ease-out 0.3s both;
-  }
-  .animate-fade-up-delay-3 {
-    animation: fadeUp 0.6s ease-out 0.45s both;
-  }
-  .animate-fade-up-delay-4 {
-    animation: fadeUp 0.6s ease-out 0.6s both;
-  }
-  .animate-fade-up-delay-5 {
-    animation: fadeUp 0.6s ease-out 0.75s both;
-  }
-  .animate-slide-in-right {
-    animation: slideInRight 0.8s ease-out 0.5s both;
-  }
+  .anim-navbar     { animation: fadeIn 0.5s cubic-bezier(.25,.46,.45,.94) 0ms both; }
+  .anim-badge      { animation: slideDown 0.5s cubic-bezier(.25,.46,.45,.94) 100ms both; }
+  .anim-h1-line1   { animation: fadeRight 0.6s cubic-bezier(.25,.46,.45,.94) 250ms both; }
+  .anim-h1-line2   { animation: fadeRight 0.6s cubic-bezier(.25,.46,.45,.94) 350ms both; }
+  .anim-h1-line3   { animation: fadeRight 0.6s cubic-bezier(.25,.46,.45,.94) 450ms both; }
+  .anim-sub        { animation: fadeIn 0.5s cubic-bezier(.25,.46,.45,.94) 550ms both; }
+  .anim-ctas       { animation: scaleIn 0.5s cubic-bezier(.25,.46,.45,.94) 700ms both; }
+  .anim-note       { animation: fadeIn 0.4s cubic-bezier(.25,.46,.45,.94) 800ms both; }
+  .anim-stats      { animation: slideUp 0.6s cubic-bezier(.25,.46,.45,.94) 900ms both; }
+  .anim-cards      { animation: slideLeft 0.7s cubic-bezier(.25,.46,.45,.94) 1100ms both; }
+
   .animate-pulse-dot {
     animation: pulseDot 2s ease-in-out infinite;
-  }
-  .animate-shimmer {
-    animation: shimmer 3s ease-in-out infinite;
   }
   .animate-gradient-shift {
     animation: gradientShift 8s ease-in-out infinite;
   }
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
+/* ── Keyframes ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideInRight {
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideLeft {
   from { opacity: 0; transform: translateX(60px); }
   to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulseDot {
@@ -118,24 +132,9 @@
   50% { opacity: 0.5; transform: scale(1.6); }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
 @keyframes gradientShift {
   0%, 100% { filter: hue-rotate(0deg); }
   50% { filter: hue-rotate(5deg); }
-}
-
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes drawLine {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
 }
 
 @keyframes pulseRing {
@@ -144,6 +143,12 @@
   100% { box-shadow: 0 0 0 0 hsl(160 72% 37% / 0); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── prefers-reduced-motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
