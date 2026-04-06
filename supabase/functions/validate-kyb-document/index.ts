@@ -225,9 +225,13 @@ Responde ÚNICAMENTE en JSON válido, sin markdown ni backticks, con esta estruc
 
 REGLAS IMPORTANTES SOBRE CAMPOS:
 - NIT: Extrae SOLO los 9 dígitos principales. El dígito de verificación (después del guión) NO debe incluirse. Ejemplo: de "900.277.945-9" extrae "900277945".
-- Código CIIU (actividad_economica): Tiene entre 2 y 4 dígitos. Si encuentras un código más largo, probablemente incluye datos adicionales; extrae solo los primeros 4 dígitos.
+- Código CIIU (actividad_economica): Tiene entre 2 y 4 dígitos. Un código de 2 dígitos (como "46") es VÁLIDO y NO es incompleto. NO reportes códigos de 2 dígitos como incompletos o incorrectos.
 - Fechas: Las diferencias entre "fecha de inicio de actividad" y "fecha de constitución" son normales y NO deben reportarse como anomalías.
+- Fechas de documentos: Un documento generado en el pasado (antes de la fecha actual) es completamente normal. NO reportes como anomalía que la fecha de generación sea anterior a la fecha actual. Solo reporta si la fecha es FUTURA (posterior a ${currentDate}).
 - Nombres y razón social: Las variaciones menores en formato (mayúsculas, puntos, abreviaciones como S.A.S vs SAS vs S.A.S.) NO son anomalías.
+- Cambios de nombre de empresa: Si el documento menciona un cambio de nombre histórico, esto es información normal y NO es una anomalía.
+- Representante legal: El nombre puede aparecer en diferentes órdenes (nombre-apellido vs apellido-nombre) y con nombres adicionales (primer y segundo nombre, dos apellidos). Si las palabras principales coinciden, NO es una anomalía.
+- Números de identificación: Los números de cédula pueden tener ceros a la izquierda debido a formatos de OCR. NO reportes esto como formato inusual.
 
 Señales estructurales esperadas por tipo de documento (busca estos textos clave):
 - rut: "Registro Único Tributario", "DIAN", "Dirección de Impuestos y Aduanas Nacionales", "Número de Identificación Tributaria"
@@ -241,9 +245,14 @@ Reglas de evaluación:
 - Si encuentras las señales estructurales esperadas para el tipo declarado, el confidence debe ser alto (70-100).
 - Si el texto no contiene las señales esperadas, reporta anomalías y baja el confidence.
 - Si el tipo declarado no coincide con el contenido real, indica el tipo correcto en doc_type y agrega la anomalía.
-- Verifica coherencia: que el NIT tenga 9 dígitos, que las fechas sean razonables respecto a la fecha actual (${currentDate}).
+- Verifica coherencia: que el NIT tenga 9 dígitos.
+- NO reportes como anomalía que un documento tenga fecha de generación pasada.
 - NO reportes como anomalía diferencias entre fecha de inicio de actividad y fecha de constitución.
 - NO reportes como anomalía variaciones de formato en nombres o razón social.
+- NO reportes como anomalía el orden de nombres del representante legal si las palabras coinciden.
+- NO reportes como anomalía ceros a la izquierda en números de cédula.
+- NO reportes como anomalía cambios de nombre históricos de la empresa.
+- NO reportes códigos CIIU de 2 dígitos como incompletos.
 - confidence es 0-100: qué tan seguro estás de que el documento es auténtico, legible y del tipo correcto.`;
 
     const maxOcrLength = 30000;
