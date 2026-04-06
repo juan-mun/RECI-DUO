@@ -98,8 +98,21 @@ const HeroSection = () => {
 
             <h1 className="font-headline text-hero leading-[1.05] tracking-tight" style={{ transform: `translateY(${-parallaxY * 0.3}px)` }}>
               <span className="block anim-h1-line1 text-white">Conectamos residuos</span>
-              <span className="block anim-h1-line2 text-white">con{" "}<span style={{ color: "#1D9E75" }}>soluciones</span></span>
-              <span className="block anim-h1-line3" style={{ color: "#1D9E75" }}>responsables</span>
+              <span className="block anim-h1-line2 text-white">con{" "}
+                <span className="inline-block overflow-hidden align-bottom" style={{ height: "1.1em" }}>
+                  <span
+                    className="inline-flex flex-col transition-transform duration-700 ease-in-out"
+                    style={{
+                      color: "#1D9E75",
+                      transform: `translateY(-${rotatingWordIndex * 1.1}em)`,
+                    }}
+                  >
+                    {rotatingWords.map((word, i) => (
+                      <span key={i} className="block" style={{ height: "1.1em", lineHeight: "1.1em" }}>{word}</span>
+                    ))}
+                  </span>
+                </span>
+              </span>
             </h1>
 
             <p className="text-lg max-w-[440px] leading-relaxed anim-sub" style={{ color: "hsl(150,15%,60%)", transform: `translateY(${-parallaxY * 0.15}px)` }}>
