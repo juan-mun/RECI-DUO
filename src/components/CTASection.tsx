@@ -8,7 +8,7 @@ const CTASection = () => {
   const { ref, isVisible } = useScrollAnimation(0.2);
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "#0a1a0f" }}>
+    <section className="relative py-20 md:py-28 overflow-hidden bg-grid-pattern" style={{ backgroundColor: "#0a1a0f" }}>
       {/* Left image — circular economy */}
       <div className="absolute left-0 top-0 bottom-0 w-[40%] hidden lg:block pointer-events-none overflow-visible">
         <img

@@ -36,7 +36,7 @@ const MetricsSection = () => {
   ];
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "#050f07" }}>
+    <section className="relative py-20 md:py-28 overflow-hidden bg-grid-pattern" style={{ backgroundColor: "#050f07" }}>
       {/* Background panoramic image */}
       <div className="absolute inset-0 pointer-events-none">
         <img
