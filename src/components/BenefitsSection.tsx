@@ -10,22 +10,25 @@ const benefits = [
 
 const BenefitsSection = () => {
   return (
-    <section id="beneficios" className="py-20 md:py-28 bg-background">
+    <section id="beneficios" className="py-20 md:py-28" style={{ backgroundColor: "hsl(90, 30%, 95%)" }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Beneficios</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "hsl(105, 25%, 14%)" }}>Beneficios</h2>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "hsl(105, 15%, 27%)" }}>
             Todo lo que necesitas para una gestión de residuos eficiente y responsable.
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((b, i) => (
             <div key={i} className="bg-card rounded-2xl p-6 shadow-card hover:shadow-soft transition-shadow border border-border/50 group">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:eco-gradient-bg transition-colors">
-                <b.icon className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors"
+                style={{ backgroundColor: "hsl(105, 35%, 38% / 0.1)" }}
+              >
+                <b.icon className="h-6 w-6" style={{ color: "hsl(105, 35%, 38%)" }} />
               </div>
-              <h3 className="font-semibold text-foreground mb-2">{b.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+              <h3 className="font-semibold mb-2" style={{ color: "hsl(105, 25%, 14%)" }}>{b.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "hsl(105, 12%, 45%)" }}>{b.desc}</p>
             </div>
           ))}
         </div>
