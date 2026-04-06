@@ -7,6 +7,7 @@ import FeaturedCompanies from "@/components/FeaturedCompanies";
 import TestimonialSection from "@/components/TestimonialSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       <TestimonialSection />
       <CTASection />
       <Footer />
+      <StickyMobileCTA />
     </div>
   );
 };
