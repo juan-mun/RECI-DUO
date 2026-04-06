@@ -115,7 +115,7 @@ const HeroSection = () => {
                 <span className="animate-pulse-dot absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "hsl(160,72%,37%)" }} />
                 <span className="relative inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: "#5DCAA5" }} />
               </span>
-              <span className="text-sm font-medium" style={{ color: "#5DCAA5" }}>Plataforma verificada · México</span>
+              <span className="text-sm font-medium" style={{ color: "#5DCAA5" }}>Plataforma verificada · Colombia 🇨🇴</span>
             </div>
 
             <h1 className="font-headline leading-[1.05] tracking-tight" style={{ fontSize: "clamp(40px, 5.5vw, 72px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
