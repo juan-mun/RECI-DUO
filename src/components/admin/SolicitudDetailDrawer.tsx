@@ -177,8 +177,14 @@ export function SolicitudDetailDrawer({ requestId, open, onClose }: Props) {
         .replace(/[óò]/g, 'o').replace(/[úù]/g, 'u')
         .replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
 
+      const expectedFields = request ? {
+        razon_social: request.razon_social,
+        nit: request.nit?.replace(/[^0-9]/g, ''),
+        representante_legal: request.representante_legal,
+      } : undefined;
+
       const { data: aiData, error: fnError } = await supabase.functions.invoke('validate-kyb-document', {
-        body: { file: base64, mimeType, docType },
+        body: { file: base64, mimeType, docType, expectedFields },
       });
 
       if (fnError) throw fnError;
