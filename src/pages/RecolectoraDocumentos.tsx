@@ -187,8 +187,14 @@ export default function RecolectoraDocumentos() {
           reader.readAsDataURL(fileToValidate);
         });
 
+        const expectedFields = regRequest ? {
+          razon_social: regRequest.razon_social,
+          nit: regRequest.nit?.replace(/[^0-9]/g, ''),
+          representante_legal: regRequest.representante_legal,
+        } : undefined;
+
         const { data: aiData } = await supabase.functions.invoke('validate-kyb-document', {
-          body: { file: base64, mimeType: fileToValidate.type, docType: updateDoc.key },
+          body: { file: base64, mimeType: fileToValidate.type, docType: updateDoc.key, expectedFields },
         });
 
         if (aiData?.extraction && docId) {
