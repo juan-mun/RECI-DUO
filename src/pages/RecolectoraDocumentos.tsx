@@ -70,7 +70,7 @@ export default function RecolectoraDocumentos() {
     queryFn: async () => {
       const { data } = await supabase
         .from('registration_requests')
-        .select('id, numero_resolucion_licencia, autoridad_ambiental')
+        .select('id, numero_resolucion_licencia, autoridad_ambiental, razon_social, nit, representante_legal')
         .eq('user_id', user!.id)
         .eq('role', 'recolectora')
         .eq('status', 'aprobada')
@@ -187,8 +187,14 @@ export default function RecolectoraDocumentos() {
           reader.readAsDataURL(fileToValidate);
         });
 
+        const expectedFields = regRequest ? {
+          razon_social: regRequest.razon_social,
+          nit: regRequest.nit?.replace(/[^0-9]/g, ''),
+          representante_legal: regRequest.representante_legal,
+        } : undefined;
+
         const { data: aiData } = await supabase.functions.invoke('validate-kyb-document', {
-          body: { file: base64, mimeType: fileToValidate.type, docType: updateDoc.key },
+          body: { file: base64, mimeType: fileToValidate.type, docType: updateDoc.key, expectedFields },
         });
 
         if (aiData?.extraction && docId) {

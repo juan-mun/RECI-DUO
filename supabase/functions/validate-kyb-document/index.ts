@@ -34,6 +34,63 @@ async function extractJsonFromResponse(response: string): Promise<any> {
   }
 }
 
+function normalizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "")
+    .trim();
+}
+
+function crossValidate(
+  extraction: any,
+  expectedFields?: { razon_social?: string; nit?: string; representante_legal?: string }
+): string[] {
+  const anomalies: string[] = [];
+  if (!expectedFields || !extraction.fields) return anomalies;
+
+  const fields = extraction.fields;
+
+  if (expectedFields.nit && fields.nit) {
+    const expectedNit = expectedFields.nit.replace(/[^0-9]/g, "");
+    const extractedNit = String(fields.nit).replace(/[^0-9]/g, "");
+    if (expectedNit && extractedNit && expectedNit !== extractedNit) {
+      anomalies.push(
+        `NIT no coincide: registrado=${expectedNit}, documento=${extractedNit}`
+      );
+    }
+  }
+
+  if (expectedFields.razon_social && fields.razon_social) {
+    const expected = normalizeText(expectedFields.razon_social);
+    const extracted = normalizeText(fields.razon_social);
+    if (expected && extracted) {
+      // Check if one contains the other (fuzzy match for variations like S.A.S vs SAS)
+      if (!expected.includes(extracted) && !extracted.includes(expected)) {
+        anomalies.push(
+          `Razón social no coincide: registrada="${expectedFields.razon_social}", documento="${fields.razon_social}"`
+        );
+      }
+    }
+  }
+
+  if (expectedFields.representante_legal && fields.representante_legal) {
+    const expected = normalizeText(expectedFields.representante_legal);
+    const extracted = normalizeText(fields.representante_legal);
+    if (expected && extracted) {
+      if (!expected.includes(extracted) && !extracted.includes(expected)) {
+        anomalies.push(
+          `Representante legal no coincide: registrado="${expectedFields.representante_legal}", documento="${fields.representante_legal}"`
+        );
+      }
+    }
+  }
+
+  return anomalies;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -46,7 +103,7 @@ serve(async (req) => {
       throw new Error("Missing MISTRAL_API_KEY");
     }
 
-    const { file, mimeType, docType } = await req.json();
+    const { file, mimeType, docType, expectedFields } = await req.json();
 
     if (!file || !mimeType || !docType) {
       return new Response(
@@ -176,6 +233,18 @@ Reglas de evaluación:
     console.log("Mistral analysis response length:", rawText.length);
 
     const extraction = await extractJsonFromResponse(rawText);
+
+    // Step 3: Cross-validation against expected fields from registration
+    if (expectedFields) {
+      const crossAnomalies = crossValidate(extraction, expectedFields);
+      if (crossAnomalies.length > 0) {
+        extraction.anomalies = [...(extraction.anomalies || []), ...crossAnomalies];
+        // Reduce confidence if cross-validation fails
+        const penalty = crossAnomalies.length * 15;
+        extraction.confidence = Math.max(0, (extraction.confidence || 0) - penalty);
+        console.log(`Cross-validation found ${crossAnomalies.length} mismatches, confidence reduced by ${penalty}`);
+      }
+    }
 
     return new Response(JSON.stringify({ extraction }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
