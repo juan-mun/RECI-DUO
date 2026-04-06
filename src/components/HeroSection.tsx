@@ -22,7 +22,7 @@ function useCountUp(target: number, duration = 1800, isVisible = false) {
   return count;
 }
 
-const rotatingWords = ["soluciones responsables", "soluciones sostenibles", "soluciones automatizadas", "soluciones certificadas"];
+const rotatingWords = ["Responsablemente.", "Sosteniblemente.", "Certificadamente."];
 
 const HeroSection = () => {
   const statsRef = useRef<HTMLDivElement>(null);
