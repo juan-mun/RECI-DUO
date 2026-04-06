@@ -22,11 +22,21 @@ function useCountUp(target: number, duration = 1800, isVisible = false) {
   return count;
 }
 
+const rotatingWords = ["soluciones responsables", "soluciones sostenibles", "soluciones automatizadas", "soluciones certificadas"];
+
 const HeroSection = () => {
   const statsRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const [statsVisible, setStatsVisible] = useState(false);
   const [parallaxY, setParallaxY] = useState(0);
+  const [rotatingWordIndex, setRotatingWordIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotatingWordIndex((prev) => (prev + 1) % rotatingWords.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const el = statsRef.current;
