@@ -170,13 +170,58 @@ export function RegisterForm({ role, onBack, onSuccess }: RegisterFormProps) {
           }
 
           const docSpec = docs.find((d) => d.name === docName);
-          await supabase.from('registration_documents').insert({
+          const { data: inserted, error: insertErr } = await supabase.from('registration_documents').insert({
             request_id: reqData.id,
             document_name: docName,
             file_path: filePath,
             file_size: file.size,
             is_required: docSpec?.required ?? true,
-          });
+          }).select('id').single();
+          if (insertErr) throw insertErr;
+
+          // AI validation (non-blocking)
+          try {
+            const docTypeMap: Record<string, string> = {
+              'RUT actualizado': 'rut',
+              'Cámara de Comercio (no mayor a 90 días)': 'camara_comercio',
+              'Cédula del representante legal': 'cedula',
+              'Licencia Ambiental vigente': 'licencia_ambiental',
+              'Plan de Manejo Ambiental (PMA)': 'plan_manejo_ambiental',
+              'Certificado RESPEL del IDEAM': 'registro_rua_respel',
+              'RUT': 'rut',
+              'Cámara de Comercio': 'camara_comercio',
+              'Cédula representante legal': 'cedula',
+            };
+            const docType = docTypeMap[docName] || 'otro';
+
+            const base64 = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve((reader.result as string).split(',')[1]);
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+
+            const expectedFields = {
+              razon_social: form.razonSocial,
+              nit: form.nit.replace(/[^0-9]/g, ''),
+              representante_legal: form.representante,
+            };
+
+            const { data: aiData } = await supabase.functions.invoke('validate-kyb-document', {
+              body: { file: base64, mimeType: file.type, docType, expectedFields },
+            });
+
+            if (aiData?.extraction && inserted?.id) {
+              await supabase.from('registration_documents').update({
+                ai_confidence: aiData.extraction.confidence,
+                ai_anomalies: aiData.extraction.anomalies,
+                ai_fields: aiData.extraction.fields,
+                ai_validated_at: new Date().toISOString(),
+              }).eq('id', inserted.id);
+            }
+          } catch (aiErr) {
+            console.error('AI validation error for', docName, aiErr);
+          }
         } catch (docErr) {
           uploadErrors.push(`${docName}: error inesperado`);
         }
