@@ -1,18 +1,13 @@
-import { Search, UserCheck, RefreshCw, ShieldCheck, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useEffect, useRef, useState } from "react";
-
-const leftFeatures = [
-  { icon: Search, title: "Revisión de certificaciones", desc: "Certificados ambientales, licencias SEMARNAT y permisos vigentes." },
-  { icon: UserCheck, title: "Validación humana", desc: "Equipo especializado en normativa revisa cada expediente manualmente." },
-  { icon: RefreshCw, title: "Monitoreo continuo", desc: "Si una cert vence, el gestor se suspende automáticamente." },
-];
+import verificacionImg from "@/assets/verificacion.png";
 
 const checklist = [
   "Certificados ambientales",
   "Licencias de operación",
-  "Permisos vigentes",
-  "Seguros de responsabilidad",
+  "Permisos SEMARNAT vigentes",
+  "Seguros de responsabilidad civil",
   "Historial sin sanciones",
 ];
 
@@ -38,63 +33,55 @@ const TrustSection = () => {
   const bigNum = useCountUp(100, 1800, isVisible);
 
   return (
-    <section id="confianza" className="py-20 md:py-28 bg-card">
-      <div className="container mx-auto px-4" ref={ref}>
-        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <p className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">CONFIANZA</p>
-          <h2 className="text-section font-headline text-foreground mb-4">Verificación que no es marketing</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Cada gestor pasa por un proceso riguroso antes de ser aprobado.
-          </p>
-        </div>
+    <section id="confianza" className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "#0a1a0f" }}>
+      {/* Left image — verification facility */}
+      <div className="absolute left-0 top-0 bottom-0 w-[45%] hidden lg:block pointer-events-none overflow-visible">
+        <img
+          src={verificacionImg}
+          alt="Instalación certificada de reciclaje"
+          className="absolute top-1/2 left-0 w-full h-auto max-w-none"
+          style={{
+            mixBlendMode: "screen",
+            transform: "translateY(-50%)",
+            WebkitMaskImage: "linear-gradient(to right, black 40%, transparent 90%)",
+            maskImage: "linear-gradient(to right, black 40%, transparent 90%)",
+          }}
+        />
+      </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left features */}
-          <div className="space-y-6">
-            {leftFeatures.map((f, i) => (
-              <div
-                key={i}
-                className={`flex gap-4 transition-all duration-700 ${
-                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
-                }`}
-                style={{ transitionDelay: isVisible ? `${200 + i * 150}ms` : "0ms" }}
-              >
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary/10">
-                  <f.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-                </div>
-              </div>
-            ))}
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+        <div className="lg:ml-auto lg:max-w-[50%]">
+          <div className={`mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: "#5DCAA5" }}>CONFIANZA</p>
+            <h2 className="text-section font-headline text-white mb-4">Verificación que no es marketing.</h2>
+            <p className="text-lg" style={{ color: "hsl(150,15%,55%)" }}>
+              Cada gestor pasa por un proceso riguroso antes de ser aprobado.
+            </p>
           </div>
 
-          {/* Right stat card */}
-          <div className={`transition-all duration-700 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
-            <div className="rounded-2xl border-2 border-primary/20 bg-card p-8 shadow-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <ShieldCheck className="h-8 w-8 text-primary" />
+          {/* Big stat */}
+          <div className={`mb-8 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
+            <p className="font-headline text-6xl md:text-7xl mb-1" style={{ color: "#5DCAA5" }}>{bigNum}%</p>
+            <p className="text-lg font-medium text-white">empresas verificadas antes de operar</p>
+          </div>
+
+          {/* Checklist */}
+          <div className="space-y-3">
+            {checklist.map((item, i) => (
+              <div
+                key={i}
+                className={`flex items-center gap-3 transition-all duration-500 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: isVisible ? `${500 + i * 150}ms` : "0ms" }}
+              >
+                <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: "rgba(29,158,117,0.2)" }}>
+                  <Check className="h-3 w-3" style={{ color: "#1D9E75" }} />
+                </div>
+                <span className="text-sm" style={{ color: "hsl(150,15%,70%)" }}>{item}</span>
               </div>
-              <p className="font-headline text-6xl md:text-7xl text-primary mb-2">{bigNum}%</p>
-              <p className="text-lg font-medium text-foreground mb-6">Empresas verificadas antes de operar</p>
-              <div className="space-y-3">
-                {checklist.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center gap-3 transition-all duration-500 ${
-                      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                    }`}
-                    style={{ transitionDelay: isVisible ? `${500 + i * 150}ms` : "0ms" }}
-                  >
-                    <div className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
-                    <span className="text-sm text-foreground">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
