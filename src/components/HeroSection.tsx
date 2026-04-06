@@ -111,8 +111,9 @@ const HeroSection = () => {
               <span className="text-sm font-medium" style={{ color: "#5DCAA5" }}>Plataforma verificada · México</span>
             </div>
 
-            <h1 className="font-headline leading-[1.05] tracking-tight" style={{ fontSize: "clamp(36px, 5vw, 64px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
-              <span className="block anim-h1-line1 text-white">Conectamos residuos con</span>
+            <h1 className="font-headline leading-[1.1] tracking-tight max-w-[520px]" style={{ fontSize: "clamp(32px, 4.5vw, 56px)", transform: `translateY(${-parallaxY * 0.3}px)` }}>
+              <span className="block anim-h1-line1 text-white">Conectamos</span>
+              <span className="block anim-h1-line1 text-white">residuos con</span>
               <span
                 className="block anim-h1-line2 transition-all duration-500 ease-in-out"
                 style={{
