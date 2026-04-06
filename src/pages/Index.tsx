@@ -10,10 +10,12 @@ import TestimonialSection from "@/components/TestimonialSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import GreenParticles from "@/components/GreenParticles";
 
 const Index = () => {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#050f07" }}>
+      <GreenParticles />
       <Navbar />
       <HeroSection />
       <UrgencyBanner />
