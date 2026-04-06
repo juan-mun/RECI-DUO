@@ -41,13 +41,9 @@ serve(async (req) => {
 
   try {
     const MISTRAL_API_KEY = Deno.env.get("MISTRAL_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!MISTRAL_API_KEY) {
       throw new Error("Missing MISTRAL_API_KEY");
-    }
-    if (!LOVABLE_API_KEY) {
-      throw new Error("Missing LOVABLE_API_KEY");
     }
 
     const { file, mimeType, docType } = await req.json();
@@ -105,67 +101,79 @@ serve(async (req) => {
 
     console.log(`OCR extracted ${ocrText.length} chars`);
 
-    // Step 2: Field extraction + validation with Lovable AI (Gemini)
-    const systemPrompt = `Eres un motor de extracción documental para KYB en Colombia, especializado en empresas recolectoras de residuos.
-Recibes texto OCR de un documento. Extrae campos y evalúa autenticidad.
-Responde ÚNICAMENTE en JSON válido, sin markdown ni backticks:
+    // Step 2: Field extraction + validation with Mistral Chat
+    const systemPrompt = `Eres un motor de extracción documental para KYB en Colombia.
+Recibes el texto OCR de un documento. Tu tarea es extraer campos estructurados y evaluar la coherencia del documento.
+Este sistema se usa tanto para empresas generadoras de residuos como para empresas recolectoras.
+
+Responde ÚNICAMENTE en JSON válido, sin markdown ni backticks, con esta estructura:
 {
-  "doc_type": "licencia_ambiental|rut|camara_comercio|registro_rua_respel|plan_manejo_ambiental|cedula|otro",
+  "doc_type": "rut|camara_comercio|cedula|licencia_ambiental|registro_rua_respel|plan_manejo_ambiental|otro",
   "fields": {
     "nit": "solo dígitos sin puntos ni dígito de verificación, o null",
     "razon_social": "string o null",
     "fecha_documento": "YYYY-MM-DD o null",
     "fecha_vencimiento": "YYYY-MM-DD o null",
     "representante_legal": "string o null",
-    "numero_resolucion": "string o null (licencia_ambiental)",
-    "autoridad_ambiental": "string o null (licencia_ambiental)",
+    "numero_resolucion": "string o null",
+    "autoridad_emisora": "string o null",
     "categorias_residuos": ["array de categorías autorizadas, o []"],
-    "actividad_economica": "código CIIU o null"
+    "actividad_economica": "código CIIU o null",
+    "vigente": true o false o null,
+    "numero_documento": "número de cédula o null"
   },
   "structural_signals": ["textos clave encontrados que confirman autenticidad"],
   "anomalies": ["descripción de cada anomalía detectada"],
   "confidence": 0
 }
-Señales estructurales esperadas por tipo:
-- licencia_ambiental: "Resolución", nombre de autoridad ambiental (ANLA, CAR, etc.), "otorga licencia ambiental"
-- rut: "Registro Único Tributario", "DIAN", "Dirección de Impuestos"
-- camara_comercio: "Certificado de existencia y representación legal", nombre de Cámara de Comercio
-- registro_rua_respel: "IDEAM", "RUA", "RESPEL", "registro único ambiental"
-- plan_manejo_ambiental: "Plan de Manejo Ambiental", "medidas de manejo", "impacto ambiental"
-confidence es 0-100: qué tan seguro estás de que el documento es auténtico y legible.`;
 
-    // Truncate OCR text if too long to avoid token limits
+Señales estructurales esperadas por tipo de documento (busca estos textos clave):
+- rut: "Registro Único Tributario", "DIAN", "Dirección de Impuestos y Aduanas Nacionales", "Número de Identificación Tributaria"
+- camara_comercio: "Certificado de existencia y representación legal", "Cámara de Comercio", "matrícula mercantil", "objeto social"
+- cedula: "República de Colombia", "Cédula de Ciudadanía", "Registraduría Nacional", "NUIP"
+- licencia_ambiental: "Resolución", nombre de autoridad ambiental (ANLA, CAR, Corpoboyacá, etc.), "otorga licencia ambiental"
+- registro_rua_respel: "IDEAM", "RUA", "RESPEL", "Registro Único Ambiental"
+- plan_manejo_ambiental: "Plan de Manejo Ambiental", "medidas de manejo", "impacto ambiental"
+
+Reglas de evaluación:
+- Si encuentras las señales estructurales esperadas para el tipo declarado, el confidence debe ser alto (70-100).
+- Si el texto no contiene las señales esperadas, reporta anomalías y baja el confidence.
+- Si el tipo declarado no coincide con el contenido real, indica el tipo correcto en doc_type y agrega la anomalía.
+- Verifica coherencia: que el NIT tenga formato válido (9 dígitos), que las fechas sean razonables, etc.
+- confidence es 0-100: qué tan seguro estás de que el documento es auténtico, legible y del tipo correcto.`;
+
     const maxOcrLength = 30000;
-    const truncatedOcrText = ocrText.length > maxOcrLength 
+    const truncatedOcrText = ocrText.length > maxOcrLength
       ? ocrText.substring(0, maxOcrLength) + "\n\n[... texto truncado ...]"
       : ocrText;
 
-    const aiResponse = await fetch("https://api.lovable.dev/v1/chat/completions", {
+    const chatResponse = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${MISTRAL_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "mistral-large-latest",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Doc type: ${docType}\n\nOCR text:\n${truncatedOcrText}` },
+          { role: "user", content: `Tipo de documento declarado: ${docType}\n\nTexto OCR extraído:\n${truncatedOcrText}` },
         ],
-        max_tokens: 1000,
+        max_tokens: 1500,
+        temperature: 0.1,
       }),
     });
 
-    if (!aiResponse.ok) {
-      const errText = await aiResponse.text();
-      console.error("Lovable AI error:", aiResponse.status, errText);
-      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+    if (!chatResponse.ok) {
+      const errText = await chatResponse.text();
+      console.error("Mistral Chat error:", chatResponse.status, errText);
+      throw new Error(`AI analysis failed: ${chatResponse.status}`);
     }
 
-    const aiData = await aiResponse.json();
-    const rawText = aiData.choices?.[0]?.message?.content || "";
+    const chatData = await chatResponse.json();
+    const rawText = chatData.choices?.[0]?.message?.content || "";
 
-    console.log("AI raw response length:", rawText.length);
+    console.log("Mistral analysis response length:", rawText.length);
 
     const extraction = await extractJsonFromResponse(rawText);
 
