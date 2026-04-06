@@ -134,7 +134,7 @@ const FeaturedCompanies = () => {
                   loading="lazy"
                   width={512}
                   height={512}
-                  className="h-24 w-24 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
+                  className="h-28 w-28 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                 />
                 {company.verified && (
                   <div
