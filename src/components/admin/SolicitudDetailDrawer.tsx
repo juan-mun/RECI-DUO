@@ -208,14 +208,14 @@ export function SolicitudDetailDrawer({ requestId, open, onClose }: Props) {
     }
   };
 
-  // Trigger AI validation for ALL docs
+  // Trigger AI validation for ALL docs (re-validates even already validated ones)
   const triggerAiValidationAll = async () => {
     setAiValidating(true);
     for (const doc of docs) {
-      if (doc.ai_confidence != null) continue; // skip already validated
       await triggerAiValidation(doc);
     }
     setAiValidating(false);
+    toast({ title: 'Re-validación completa', description: 'Todos los documentos han sido re-analizados por la IA.' });
   };
 
   const handleAction = async (action: 'aprobar' | 'rechazar' | 'correccion') => {
