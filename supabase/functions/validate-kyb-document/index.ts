@@ -41,10 +41,13 @@ serve(async (req) => {
 
   try {
     const MISTRAL_API_KEY = Deno.env.get("MISTRAL_API_KEY");
-    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!MISTRAL_API_KEY || !ANTHROPIC_API_KEY) {
-      throw new Error("Missing API keys");
+    if (!MISTRAL_API_KEY) {
+      throw new Error("Missing MISTRAL_API_KEY");
+    }
+    if (!LOVABLE_API_KEY) {
+      throw new Error("Missing LOVABLE_API_KEY");
     }
 
     const { file, mimeType, docType } = await req.json();
@@ -102,7 +105,7 @@ serve(async (req) => {
 
     console.log(`OCR extracted ${ocrText.length} chars`);
 
-    // Step 2: Field extraction + validation with Claude
+    // Step 2: Field extraction + validation with Lovable AI (Gemini)
     const systemPrompt = `Eres un motor de extracción documental para KYB en Colombia, especializado en empresas recolectoras de residuos.
 Recibes texto OCR de un documento. Extrae campos y evalúa autenticidad.
 Responde ÚNICAMENTE en JSON válido, sin markdown ni backticks:
@@ -131,33 +134,38 @@ Señales estructurales esperadas por tipo:
 - plan_manejo_ambiental: "Plan de Manejo Ambiental", "medidas de manejo", "impacto ambiental"
 confidence es 0-100: qué tan seguro estás de que el documento es auténtico y legible.`;
 
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    // Truncate OCR text if too long to avoid token limits
+    const maxOcrLength = 30000;
+    const truncatedOcrText = ocrText.length > maxOcrLength 
+      ? ocrText.substring(0, maxOcrLength) + "\n\n[... texto truncado ...]"
+      : ocrText;
+
+    const aiResponse = await fetch("https://api.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: systemPrompt,
+        model: "google/gemini-2.5-flash",
         messages: [
-          { role: "user", content: `Doc type: ${docType}\n\nOCR text:\n${ocrText}` },
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Doc type: ${docType}\n\nOCR text:\n${truncatedOcrText}` },
         ],
+        max_tokens: 1000,
       }),
     });
 
-    if (!claudeResponse.ok) {
-      const errText = await claudeResponse.text();
-      console.error("Claude error:", claudeResponse.status, errText);
-      throw new Error(`Claude failed: ${claudeResponse.status}`);
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error("Lovable AI error:", aiResponse.status, errText);
+      throw new Error(`AI analysis failed: ${aiResponse.status}`);
     }
 
-    const claudeData = await claudeResponse.json();
-    const rawText = claudeData.content?.[0]?.text || "";
+    const aiData = await aiResponse.json();
+    const rawText = aiData.choices?.[0]?.message?.content || "";
 
-    console.log("Claude raw response length:", rawText.length);
+    console.log("AI raw response length:", rawText.length);
 
     const extraction = await extractJsonFromResponse(rawText);
 
