@@ -104,14 +104,19 @@ function crossValidate(
     }
   }
 
-  // Representante legal: fuzzy match with 75% similarity threshold
+  // Representante legal: check if all words from the shorter name appear in the longer one
   if (expectedFields.representante_legal && fields.representante_legal) {
     const expected = normalizeText(expectedFields.representante_legal);
     const extracted = normalizeText(fields.representante_legal);
     if (expected && extracted) {
+      const expectedWords = expectedFields.representante_legal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/\s+/).filter(w => w.length > 1);
+      const extractedWords = String(fields.representante_legal).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/\s+/).filter(w => w.length > 1);
+      const shorterWords = expectedWords.length <= extractedWords.length ? expectedWords : extractedWords;
+      const longerText = expectedWords.length <= extractedWords.length ? extractedWords.join(" ") : expectedWords.join(" ");
+      const allWordsFound = shorterWords.every(w => longerText.includes(w));
       const sim = similarity(expected, extracted);
       const containsMatch = expected.includes(extracted) || extracted.includes(expected);
-      if (!containsMatch && sim < 0.75) {
+      if (!allWordsFound && !containsMatch && sim < 0.6) {
         anomalies.push(
           `Representante legal no coincide (similitud ${Math.round(sim * 100)}%): registrado="${expectedFields.representante_legal}", documento="${fields.representante_legal}"`
         );
