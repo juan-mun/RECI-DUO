@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap');
+
+@layer base {
+  :root {
+    --background: 150 20% 99%;
+    --foreground: 210 20% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 12%;
+
+    --primary: 152 55% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 210 20% 12%;
+
+    --muted: 150 15% 95%;
+    --muted-foreground: 210 10% 46%;
+
+    --accent: 205 75% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 90%;
+    --input: 210 20% 90%;
+    --ring: 152 55% 40%;
+
+    --radius: 0.75rem;
+
+    --eco-light: 150 30% 96%;
+    --eco-gradient: linear-gradient(135deg, hsl(152, 55%, 40%), hsl(205, 75%, 48%));
+    --hero-gradient: linear-gradient(135deg, hsl(150, 30%, 96%), hsl(205, 30%, 96%));
+    --shadow-soft: 0 4px 24px -4px hsl(210 20% 12% / 0.08);
+    --shadow-card: 0 1px 3px hsl(210 20% 12% / 0.06), 0 8px 24px -8px hsl(210 20% 12% / 0.08);
+
+    /* Hero-specific colors */
+    --hero-bg: 90 30% 95%;
+    --hero-headline: 105 25% 14%;
+    --hero-subtitle: 105 15% 27%;
+    --hero-muted: 105 12% 45%;
+    --hero-border-soft: 105 25% 80%;
+    --hero-green: 105 35% 38%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Barlow', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .eco-gradient-bg {
+    background: var(--eco-gradient);
+  }
+  .hero-gradient-bg {
+    background: var(--hero-gradient);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .font-headline {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out both;
+  }
+  .animate-fade-up-delay {
+    animation: fadeUp 0.6s ease-out 0.1s both;
+  }
+  .animate-fade-up-delay-2 {
+    animation: fadeUp 0.6s ease-out 0.2s both;
+  }
+  .animate-fade-up-delay-3 {
+    animation: fadeUp 0.6s ease-out 0.3s both;
+  }
+  .animate-slide-in-right {
+    animation: slideInRight 0.8s ease-out 0.3s both;
+  }
+  .animate-float-leaf {
+    animation: floatLeaf 6s ease-in-out infinite;
+  }
+  .animate-float-leaf-slow {
+    animation: floatLeaf 8s ease-in-out infinite;
+  }
+  .animate-pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes floatLeaf {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.4); }
+}
+
+@keyframes blob {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg) scale(1); }
+  33% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: rotate(120deg) scale(1.05); }
+  66% { border-radius: 50% 60% 30% 60% / 30% 50% 70% 50%; transform: rotate(240deg) scale(0.95); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-blob {
+  animation: blob 8s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
