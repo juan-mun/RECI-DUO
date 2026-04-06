@@ -208,14 +208,14 @@ export function SolicitudDetailDrawer({ requestId, open, onClose }: Props) {
     }
   };
 
-  // Trigger AI validation for ALL docs
+  // Trigger AI validation for ALL docs (re-validates even already validated ones)
   const triggerAiValidationAll = async () => {
     setAiValidating(true);
     for (const doc of docs) {
-      if (doc.ai_confidence != null) continue; // skip already validated
       await triggerAiValidation(doc);
     }
     setAiValidating(false);
+    toast({ title: 'Re-validación completa', description: 'Todos los documentos han sido re-analizados por la IA.' });
   };
 
   const handleAction = async (action: 'aprobar' | 'rechazar' | 'correccion') => {
@@ -378,9 +378,24 @@ export function SolicitudDetailDrawer({ requestId, open, onClose }: Props) {
                 )}
 
                 {/* Per-document validation cards */}
-                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                  Validación por documento
-                </h4>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Validación por documento
+                  </h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs gap-1.5 px-3"
+                    disabled={aiValidating || docs.length === 0}
+                    onClick={triggerAiValidationAll}
+                  >
+                    {aiValidating
+                      ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      : <Brain className="h-3.5 w-3.5" />
+                    }
+                    {aiValidating ? 'Validando...' : 'Re-validar todos'}
+                  </Button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {docs.map((doc) => {
                     const status = getDocAiStatus(doc);
