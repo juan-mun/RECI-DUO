@@ -332,8 +332,7 @@ export default function MarketplaceSection() {
 
   return (
     <div className="p-6">
-
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar filters */}
           <aside
             className="w-full lg:w-64 shrink-0 rounded-xl p-5 self-start lg:sticky lg:top-24"
