@@ -20,6 +20,7 @@ import GeneradoraDashboard from "./pages/GeneradoraDashboard.tsx";
 import GeneradoraResiduos from "./pages/GeneradoraResiduos.tsx";
 import GeneradoraSolicitudes from "./pages/GeneradoraSolicitudes.tsx";
 import GeneradoraCertificados from "./pages/GeneradoraCertificados.tsx";
+import Marketplace from "./pages/Marketplace.tsx";
 import RecolectoraLayout from "./pages/RecolectoraLayout.tsx";
 import RecolectoraDashboard from "./pages/RecolectoraDashboard.tsx";
 import RecolectoraSolicitudes from "./pages/RecolectoraSolicitudes.tsx";
@@ -72,6 +73,7 @@ const App = () => (
               <Route index element={<GeneradoraDashboard />} />
               <Route path="residuos" element={<GeneradoraResiduos />} />
               <Route path="solicitudes" element={<GeneradoraSolicitudes />} />
+              <Route path="marketplace" element={<Marketplace />} />
               <Route path="certificados" element={<GeneradoraCertificados />} />
               <Route path="reportes" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Reportes</h1><p className="text-muted-foreground mt-2">Próximamente podrás ver reportes de tu gestión.</p></div>} />
               <Route path="configuracion" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Configuración</h1><p className="text-muted-foreground mt-2">Configuración de tu empresa.</p></div>} />
@@ -85,6 +87,7 @@ const App = () => (
               }
             >
               <Route index element={<RecolectoraDashboard />} />
+              <Route path="marketplace" element={<Marketplace />} />
               <Route path="solicitudes" element={<RecolectoraSolicitudes />} />
               <Route path="ofertas" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Mis Ofertas</h1><p className="text-muted-foreground mt-2">Historial de ofertas enviadas.</p></div>} />
               <Route path="recolecciones" element={<RecolectoraRecolecciones />} />

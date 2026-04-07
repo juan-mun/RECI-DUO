@@ -1,4 +1,4 @@
-import { Home, FileText, Recycle, BarChart3, Settings, Leaf, Award } from 'lucide-react';
+import { Home, FileText, Recycle, BarChart3, Settings, Leaf, Award, Store } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
@@ -16,6 +16,7 @@ import {
 const items = [
   { title: 'Dashboard', url: '/generadora', icon: Home },
   { title: 'Mis Residuos', url: '/generadora/residuos', icon: Recycle },
+  { title: 'Marketplace', url: '/generadora/marketplace', icon: Store },
   { title: 'Solicitudes', url: '/generadora/solicitudes', icon: FileText },
   { title: 'Certificados', url: '/generadora/certificados', icon: Award },
   { title: 'Reportes', url: '/generadora/reportes', icon: BarChart3 },
