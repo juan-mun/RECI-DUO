@@ -80,7 +80,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
           </button>
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full rounded-[50px] h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200 border-2" style={{ background: 'hsl(var(--hero-green))', color: 'hsl(0,0%,100%)', borderColor: 'hsl(var(--hero-green))' }}>
+        <Button type="submit" variant="outline" disabled={loading} className="w-full rounded-[50px] h-11 font-medium transition-all duration-200 border-2 hover:opacity-90" style={{ borderColor: 'hsl(var(--hero-green))', color: 'hsl(var(--hero-green))' }}>
           {loading ? (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
           ) : (
