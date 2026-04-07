@@ -87,6 +87,7 @@ const App = () => (
               }
             >
               <Route index element={<RecolectoraDashboard />} />
+              <Route path="marketplace" element={<Marketplace />} />
               <Route path="solicitudes" element={<RecolectoraSolicitudes />} />
               <Route path="ofertas" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Mis Ofertas</h1><p className="text-muted-foreground mt-2">Historial de ofertas enviadas.</p></div>} />
               <Route path="recolecciones" element={<RecolectoraRecolecciones />} />
