@@ -498,6 +498,6 @@ export default function MarketplaceSection() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
