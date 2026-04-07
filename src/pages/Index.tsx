@@ -7,7 +7,7 @@ import TrustSection from "@/components/TrustSection";
 import MetricsSection from "@/components/MetricsSection";
 import FeaturedCompanies from "@/components/FeaturedCompanies";
 import TestimonialSection from "@/components/TestimonialSection";
-import MarketplaceSection from "@/components/MarketplaceSection";
+
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
