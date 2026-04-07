@@ -1,4 +1,4 @@
-import { Home, FileText, Recycle, BarChart3, Settings, Leaf, Award } from 'lucide-react';
+import { Home, FileText, Recycle, BarChart3, Settings, Leaf, Award, Store } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
