@@ -23,7 +23,7 @@ import GeneradoraCertificados from "./pages/GeneradoraCertificados.tsx";
 import Marketplace from "./pages/Marketplace.tsx";
 import RecolectoraLayout from "./pages/RecolectoraLayout.tsx";
 import RecolectoraDashboard from "./pages/RecolectoraDashboard.tsx";
-import RecolectoraSolicitudes from "./pages/RecolectoraSolicitudes.tsx";
+
 import RecolectoraRecolecciones from "./pages/RecolectoraRecolecciones.tsx";
 import RecolectoraAgenda from "./pages/RecolectoraAgenda.tsx";
 import RecolectoraCertificados from "./pages/RecolectoraCertificados.tsx";
