@@ -1,5 +1,9 @@
 # 📊 RECI-DUO - Análisis de Mercado Colombia 2026
 
+# Conoce RECI-DUO aquí: 👇
+
+**https://reci-duo.lovable.app**
+
 ## 🎯 **Contexto del Mercado**
 
 ### ♻️ **Estado Actual de la Gestión de Residuos en Colombia**
