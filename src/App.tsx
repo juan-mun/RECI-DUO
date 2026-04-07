@@ -58,9 +58,9 @@ const App = () => (
               <Route path="alertas" element={<AdminAlertas />} />
               <Route path="generadoras" element={<AdminGeneradoras />} />
               <Route path="recolectoras" element={<AdminRecolectoras />} />
-              <Route path="todas-solicitudes" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Todas las solicitudes</h1></div>} />
-              <Route path="certificados" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Todos los certificados</h1></div>} />
-              <Route path="recolecciones" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Todas las recolecciones</h1></div>} />
+              <Route path="todas-solicitudes" element={<AdminTodasSolicitudes />} />
+              <Route path="certificados" element={<AdminTodosCertificados />} />
+              <Route path="recolecciones" element={<AdminTodasRecolecciones />} />
               <Route path="reportes" element={<AdminReportes />} />
               <Route path="datos" element={<AdminDatos />} />
               <Route path="configuracion" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Configuración</h1></div>} />
