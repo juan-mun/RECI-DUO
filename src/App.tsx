@@ -20,6 +20,7 @@ import GeneradoraDashboard from "./pages/GeneradoraDashboard.tsx";
 import GeneradoraResiduos from "./pages/GeneradoraResiduos.tsx";
 import GeneradoraSolicitudes from "./pages/GeneradoraSolicitudes.tsx";
 import GeneradoraCertificados from "./pages/GeneradoraCertificados.tsx";
+import Marketplace from "./pages/Marketplace.tsx";
 import RecolectoraLayout from "./pages/RecolectoraLayout.tsx";
 import RecolectoraDashboard from "./pages/RecolectoraDashboard.tsx";
 import RecolectoraSolicitudes from "./pages/RecolectoraSolicitudes.tsx";
