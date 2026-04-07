@@ -13,7 +13,7 @@ const UrgencyBanner = () => {
       <div className="container mx-auto flex items-center justify-center gap-3 text-center">
         <AlertTriangle className="h-4 w-4 flex-shrink-0" style={{ color: "#FAC775" }} />
         <p className="text-sm font-medium" style={{ color: "#FAC775" }}>
-          El 68% de empresas en México tiene riesgo de multa por gestión irregular de residuos.
+          El 70% de empresas en Colombia tiene riesgo de sanción por gestión irregular de residuos según la ANLA.
         </p>
         <a href="#como-funciona" className="text-sm font-semibold whitespace-nowrap hover:underline" style={{ color: "#5DCAA5" }}>
           Verificar ahora →

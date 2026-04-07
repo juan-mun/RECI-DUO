@@ -23,8 +23,8 @@ const TestimonialSection = () => {
           </blockquote>
 
           <div className={`transition-all duration-700 delay-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <p className="font-semibold text-white">Carlos Méndez</p>
-            <p className="text-xs font-mono" style={{ color: "hsl(150,15%,45%)" }}>Director de Operaciones · Taller Industrial del Norte</p>
+            <p className="font-semibold text-white">Andrés Restrepo</p>
+            <p className="text-xs font-mono" style={{ color: "hsl(150,15%,45%)" }}>Director de Operaciones · Talleres Industriales del Valle</p>
           </div>
         </div>
       </div>

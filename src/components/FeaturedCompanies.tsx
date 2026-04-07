@@ -8,9 +8,9 @@ import metalreciclaLogo from "@/assets/logos/metalrecicla.png";
 import techrecycleLogo from "@/assets/logos/techrecycle.png";
 
 const companies = [
-  { name: "QuimicClean SA", desc: "Gestión integral de residuos químicos industriales", tags: ["Aceites usados", "Químicos"], location: "Ciudad de México", rating: 4.9, reviews: 127, logo: quimicleanLogo },
-  { name: "MetalRecicla Corp", desc: "Reciclaje de metales ferrosos y no ferrosos", tags: ["Metales", "Chatarra industrial"], location: "Monterrey", rating: 4.8, reviews: 98, logo: metalreciclaLogo },
-  { name: "TechRecycle MX", desc: "Disposición certificada de RAEE y baterías", tags: ["Electrónicos", "Baterías"], location: "Querétaro", rating: 4.6, reviews: 63, logo: techrecycleLogo },
+  { name: "QuimicClean SAS", desc: "Gestión integral de residuos químicos industriales", tags: ["Aceites usados", "Químicos"], location: "Bogotá", rating: 4.9, reviews: 127, logo: quimicleanLogo },
+  { name: "MetalRecicla Corp", desc: "Reciclaje de metales ferrosos y no ferrosos", tags: ["Metales", "Chatarra industrial"], location: "Medellín", rating: 4.8, reviews: 98, logo: metalreciclaLogo },
+  { name: "TechRecycle CO", desc: "Disposición certificada de RAEE y baterías", tags: ["Electrónicos", "Baterías"], location: "Cali", rating: 4.6, reviews: 63, logo: techrecycleLogo },
 ];
 
 const FeaturedCompanies = () => {
