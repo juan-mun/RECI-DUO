@@ -26,7 +26,7 @@ const Index = () => {
       <MetricsSection />
       <FeaturedCompanies />
       <TestimonialSection />
-      <MarketplaceSection />
+      
       <CTASection />
       <Footer />
       <StickyMobileCTA />
