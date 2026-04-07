@@ -73,7 +73,7 @@ const App = () => (
               <Route index element={<GeneradoraDashboard />} />
               <Route path="residuos" element={<GeneradoraResiduos />} />
               <Route path="solicitudes" element={<GeneradoraSolicitudes />} />
-              <Route path="marketplace" element={<Marketplace />} />
+              {/* Marketplace removed for generadora */}
               <Route path="certificados" element={<GeneradoraCertificados />} />
               <Route path="reportes" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Reportes</h1><p className="text-muted-foreground mt-2">Próximamente podrás ver reportes de tu gestión.</p></div>} />
               <Route path="configuracion" element={<div className="p-6"><h1 className="font-headline text-2xl font-bold">Configuración</h1><p className="text-muted-foreground mt-2">Configuración de tu empresa.</p></div>} />
