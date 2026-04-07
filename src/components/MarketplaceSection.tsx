@@ -1,501 +1,298 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Flame,
-  Sparkles,
-  Star,
-  MapPin,
-  Clock,
-  ArrowRight,
-  Plus,
-  Search,
-  ArrowUpDown,
-  Zap,
-  Beaker,
-  Cpu,
-  Building2,
-  Leaf,
-  Package,
-  TrendingUp,
-  Users,
-  FileText,
+  MapPin, Clock, Package, Search, SlidersHorizontal,
+  FileText, Users, Calendar as CalendarIcon,
 } from "lucide-react";
+import { formatDistanceToNow, format } from "date-fns";
+import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
-const MOCK_LISTINGS = [
-  {
-    id: 1,
-    tipo: "RESPEL",
-    icono: Flame,
-    nombre: "Aceites usados industriales",
-    badges: ["Urgente", "Destacado"],
-    descripcion: "Aceites lubricantes y de corte usados de proceso de manufactura CNC. Requiere transporte especializado con tanque certificado.",
-    tags: ["Decreto 4741", "RESPEL Y21", "Clase 3"],
-    ubicacion: "Bogotá, Fontibón",
-    frecuencia: "Quincenal",
-    volumen: "2,500",
-    unidad: "L",
-    aplicantes: 4,
-    tiempo: "Hace 2h",
-  },
-  {
-    id: 2,
-    tipo: "RAEE",
-    icono: Cpu,
-    nombre: "Equipos de cómputo obsoletos",
-    badges: ["Nuevo"],
-    descripcion: "Lote de 120 computadores portátiles y de escritorio para disposición certificada con destrucción de datos.",
-    tags: ["Ley 1672/2013", "RAEE Cat. 3", "Datos sensibles"],
-    ubicacion: "Medellín, El Poblado",
-    frecuencia: "Única vez",
-    volumen: "850",
-    unidad: "kg",
-    aplicantes: 7,
-    tiempo: "Hace 35min",
-  },
-  {
-    id: 3,
-    tipo: "RCD",
-    icono: Building2,
-    nombre: "Escombros de demolición controlada",
-    badges: ["Nuevo"],
-    descripcion: "Material de demolición parcial de edificación comercial. Incluye concreto, ladrillo y estructura metálica mezclada.",
-    tags: ["Res. 472/2017", "RCD Tipo A", "Aprovechable"],
-    ubicacion: "Bogotá, Chapinero",
-    frecuencia: "Semanal",
-    volumen: "15",
-    unidad: "m³",
-    aplicantes: 2,
-    tiempo: "Hace 1h",
-  },
-  {
-    id: 4,
-    tipo: "Hospitalario",
-    icono: Beaker,
-    nombre: "Residuos anatomopatológicos",
-    badges: ["Urgente"],
-    descripcion: "Residuos biosanitarios y anatomopatológicos de clínica veterinaria. Requiere incineración autorizada.",
-    tags: ["Decreto 351/2014", "Riesgo biológico", "Cat. A"],
-    ubicacion: "Cali, San Fernando",
-    frecuencia: "Semanal",
-    volumen: "180",
-    unidad: "kg",
-    aplicantes: 3,
-    tiempo: "Hace 4h",
-  },
-  {
-    id: 5,
-    tipo: "Orgánico",
-    icono: Leaf,
-    nombre: "Residuos orgánicos de restaurante",
-    badges: ["Destacado"],
-    descripcion: "Restos de alimentos y residuos de cocina de cadena de 5 restaurantes. Ideal para compostaje industrial.",
-    tags: ["PGIRS", "Aprovechable", "Compostable"],
-    ubicacion: "Barranquilla, Norte",
-    frecuencia: "Diaria",
-    volumen: "400",
-    unidad: "kg",
-    aplicantes: 9,
-    tiempo: "Hace 15min",
-  },
-  {
-    id: 6,
-    tipo: "Especial",
-    icono: Package,
-    nombre: "Llantas usadas de flota vehicular",
-    badges: ["Nuevo", "Destacado"],
-    descripcion: "Lote de 200 llantas de vehículos pesados para programa posconsumo o coprocesamiento.",
-    tags: ["Res. 1326/2017", "Posconsumo", "NFU"],
-    ubicacion: "Bucaramanga, Industrial",
-    frecuencia: "Mensual",
-    volumen: "3,200",
-    unidad: "kg",
-    aplicantes: 5,
-    tiempo: "Hace 50min",
-  },
+const CATEGORIAS_RESIDUO = [
+  "Peligroso RESPEL", "RCD", "RAEE", "Hospitalario", "Orgánico", "Especial",
 ];
 
-const FILTER_TIPOS = [
-  { label: "RESPEL", icon: Flame, active: false },
-  { label: "RAEE", icon: Cpu, active: false },
-  { label: "RCD", icon: Building2, active: false },
-  { label: "Hospitalario", icon: Beaker, active: false },
-  { label: "Orgánico", icon: Leaf, active: false },
-  { label: "Especial", icon: Package, active: false },
-];
+const categoriaColors: Record<string, string> = {
+  "Peligroso RESPEL": "bg-red-500/15 text-red-400 border-red-500/30",
+  "RCD": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+  "RAEE": "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  "Hospitalario": "bg-pink-500/15 text-pink-400 border-pink-500/30",
+  "Orgánico": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  "Especial": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+};
 
-const AVATAR_COLORS = [
-  "bg-emerald-700/60",
-  "bg-teal-700/60",
-  "bg-green-700/60",
-  "bg-cyan-700/60",
-  "bg-lime-700/60",
-];
+const categoriaIcons: Record<string, string> = {
+  "Peligroso RESPEL": "☢️",
+  "RCD": "🧱",
+  "RAEE": "💻",
+  "Hospitalario": "🏥",
+  "Orgánico": "🌿",
+  "Especial": "⚠️",
+};
 
-const AVATAR_INITIALS = ["GR", "EC", "AM", "RS", "VE", "TQ", "LM", "CP", "BI"];
+type SortOption = "reciente" | "cantidad" | "urgente";
 
-function getBadgeStyle(badge: string) {
-  if (badge === "Urgente")
-    return "bg-amber-500/15 text-amber-400 border-amber-500/30 hover:bg-amber-500/20";
-  if (badge === "Nuevo")
-    return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20";
-  if (badge === "Destacado")
-    return "bg-purple-500/15 text-purple-400 border-purple-500/30 hover:bg-purple-500/20";
-  return "";
-}
+export default function MarketplaceSection() {
+  const [categoriasFilter, setCategoriasFilter] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>("reciente");
+  const [searchTerm, setSearchTerm] = useState("");
 
-function getBadgeIcon(badge: string) {
-  if (badge === "Urgente") return <Zap className="h-3 w-3" />;
-  if (badge === "Nuevo") return <Sparkles className="h-3 w-3" />;
-  if (badge === "Destacado") return <Star className="h-3 w-3" />;
-  return null;
-}
+  // Fetch published solicitudes with their residuos
+  const { data: solicitudes = [], isLoading } = useQuery({
+    queryKey: ["marketplace-solicitudes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("solicitudes_recoleccion")
+        .select("*, solicitud_residuos(*, residuos(nombre, categoria, unidad, cantidad_estimada, descripcion))")
+        .in("status", ["publicada", "con_ofertas"])
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
-function ListingCard({ listing }: { listing: (typeof MOCK_LISTINGS)[0] }) {
-  const Icon = listing.icono;
+  // Fetch profiles for solicitud owners
+  const userIds = useMemo(() => [...new Set(solicitudes.map((s: any) => s.user_id))], [solicitudes]);
+  const { data: profiles = [] } = useQuery({
+    queryKey: ["marketplace-profiles", userIds],
+    queryFn: async () => {
+      if (userIds.length === 0) return [];
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, razon_social, ciudad")
+        .in("user_id", userIds);
+      if (error) throw error;
+      return data;
+    },
+    enabled: userIds.length > 0,
+  });
+
+  const profileMap = useMemo(() => {
+    const map: Record<string, { razon_social: string; ciudad: string }> = {};
+    profiles.forEach((p: any) => { map[p.user_id] = p; });
+    return map;
+  }, [profiles]);
+
+  // Fetch offer counts
+  const solicitudIds = useMemo(() => solicitudes.map((s: any) => s.id), [solicitudes]);
+  const { data: ofertaCounts = [] } = useQuery({
+    queryKey: ["marketplace-oferta-counts", solicitudIds],
+    queryFn: async () => {
+      if (solicitudIds.length === 0) return [];
+      const { data, error } = await supabase
+        .from("ofertas_recoleccion")
+        .select("solicitud_id")
+        .in("solicitud_id", solicitudIds);
+      if (error) throw error;
+      return data;
+    },
+    enabled: solicitudIds.length > 0,
+  });
+
+  const ofertaCountMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    ofertaCounts.forEach((o: any) => {
+      map[o.solicitud_id] = (map[o.solicitud_id] || 0) + 1;
+    });
+    return map;
+  }, [ofertaCounts]);
+
+  // Filter & sort
+  const filtered = useMemo(() => {
+    let result = [...solicitudes];
+
+    if (categoriasFilter.length > 0) {
+      result = result.filter((sol: any) =>
+        sol.solicitud_residuos?.some((sr: any) =>
+          categoriasFilter.includes(sr.residuos?.categoria)
+        )
+      );
+    }
+
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter((sol: any) => {
+        const residuoMatch = sol.solicitud_residuos?.some((sr: any) =>
+          sr.residuos?.nombre?.toLowerCase().includes(term) ||
+          sr.residuos?.categoria?.toLowerCase().includes(term)
+        );
+        const profileMatch = profileMap[sol.user_id]?.ciudad?.toLowerCase().includes(term);
+        return residuoMatch || profileMatch;
+      });
+    }
+
+    if (sortBy === "reciente") {
+      result.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } else if (sortBy === "cantidad") {
+      result.sort((a: any, b: any) => {
+        const maxA = Math.max(...(a.solicitud_residuos?.map((sr: any) => sr.cantidad_real) || [0]));
+        const maxB = Math.max(...(b.solicitud_residuos?.map((sr: any) => sr.cantidad_real) || [0]));
+        return maxB - maxA;
+      });
+    } else if (sortBy === "urgente") {
+      result.sort((a: any, b: any) => new Date(a.fecha_preferida).getTime() - new Date(b.fecha_preferida).getTime());
+    }
+
+    return result;
+  }, [solicitudes, categoriasFilter, searchTerm, sortBy, profileMap]);
+
+  const toggleCategoria = (cat: string) => {
+    setCategoriasFilter((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="group rounded-xl p-5 transition-all duration-300 hover:-translate-y-0.5"
-      style={{
-        background: "#111f15",
-        border: "0.5px solid rgba(29,158,117,0.15)",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(29,158,117,0.4)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(29,158,117,0.15)")
-      }
-    >
+    <div className="p-6 space-y-5">
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div
-            className="h-10 w-10 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(29,158,117,0.12)" }}
-          >
-            <Icon className="h-5 w-5" style={{ color: "#1D9E75" }} />
-          </div>
-          <div>
-            <span
-              className="text-xs font-medium tracking-wide uppercase"
-              style={{ color: "#5DCAA5" }}
-            >
-              {listing.tipo}
-            </span>
-            <h4 className="text-sm font-semibold text-white leading-tight">
-              {listing.nombre}
-            </h4>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="font-headline text-2xl font-bold">Solicitudes Disponibles</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Solicitudes de recolección publicadas en la plataforma.
+          </p>
         </div>
-        <div className="flex gap-1.5 flex-wrap justify-end">
-          {listing.badges.map((b) => (
-            <Badge
-              key={b}
-              className={`text-[10px] px-2 py-0.5 gap-1 border ${getBadgeStyle(b)}`}
+        <div className="flex items-center gap-2">
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+            <SelectTrigger className="w-[170px] h-9 text-sm">
+              <SelectValue placeholder="Ordenar por" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="reciente">Más reciente</SelectItem>
+              <SelectItem value="cantidad">Mayor cantidad</SelectItem>
+              <SelectItem value="urgente">Más urgente</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Search + Filters */}
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar por residuo, categoría o ciudad..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 text-sm rounded-lg bg-muted/50 border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIAS_RESIDUO.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => toggleCategoria(cat)}
+              className={cn(
+                "text-xs px-3 py-1.5 rounded-full border transition-colors",
+                categoriasFilter.includes(cat)
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-muted-foreground border-border hover:bg-muted"
+              )}
             >
-              {getBadgeIcon(b)}
-              {b}
-            </Badge>
+              {categoriaIcons[cat]} {cat}
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Description */}
-      <p className="text-xs leading-relaxed mb-3" style={{ color: "#8ba698" }}>
-        {listing.descripcion}
+      {/* Results count */}
+      <p className="text-sm text-muted-foreground">
+        <span className="font-semibold text-foreground">{filtered.length}</span> solicitud{filtered.length !== 1 ? "es" : ""} disponible{filtered.length !== 1 ? "s" : ""}
       </p>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {listing.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-            style={{
-              background: "rgba(29,158,117,0.08)",
-              color: "#5DCAA5",
-              border: "1px solid rgba(29,158,117,0.12)",
-            }}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+      {/* Cards grid */}
+      {filtered.length === 0 ? (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Package className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+            <h3 className="font-semibold text-lg">No hay solicitudes disponibles</h3>
+            <p className="text-muted-foreground text-sm mt-1">
+              {categoriasFilter.length > 0 || searchTerm
+                ? "Intenta ajustar los filtros de búsqueda."
+                : "Aún no se han publicado solicitudes de recolección."}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filtered.map((sol: any) => {
+            const profile = profileMap[sol.user_id];
+            const ofertas = ofertaCountMap[sol.id] || 0;
+            const residuos = sol.solicitud_residuos || [];
 
-      {/* Meta row */}
-      <div className="flex items-center gap-4 mb-4 text-[11px]" style={{ color: "#6b8f7b" }}>
-        <span className="flex items-center gap-1">
-          <MapPin className="h-3 w-3" /> {listing.ubicacion}
-        </span>
-        <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3" /> {listing.frecuencia}
-        </span>
-      </div>
-
-      {/* Volume + Applicants + CTA */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {/* Volume */}
-          <div>
-            <span className="text-lg font-bold text-white">
-              {listing.volumen}
-            </span>
-            <span className="text-xs ml-1" style={{ color: "#5DCAA5" }}>
-              {listing.unidad}
-            </span>
-          </div>
-
-          {/* Avatar group */}
-          <div className="flex items-center">
-            <div className="flex -space-x-2">
-              {Array.from({ length: Math.min(listing.aplicantes, 4) }).map(
-                (_, i) => (
-                  <Avatar
-                    key={i}
-                    className={`h-7 w-7 border-2 ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}
-                    style={{ borderColor: "#111f15" }}
-                  >
-                    <AvatarFallback
-                      className={`text-[9px] font-semibold text-white ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}
-                    >
-                      {AVATAR_INITIALS[i]}
-                    </AvatarFallback>
-                  </Avatar>
-                )
-              )}
-              {listing.aplicantes > 4 && (
-                <Avatar
-                  className="h-7 w-7 border-2 bg-white/5"
-                  style={{ borderColor: "#111f15" }}
-                >
-                  <AvatarFallback
-                    className="text-[9px] font-semibold bg-white/10"
-                    style={{ color: "#5DCAA5" }}
-                  >
-                    +{listing.aplicantes - 4}
-                  </AvatarFallback>
-                </Avatar>
-              )}
-            </div>
-            <span
-              className="text-[10px] ml-2 hidden sm:inline"
-              style={{ color: "#6b8f7b" }}
-            >
-              {listing.aplicantes} gestores
-            </span>
-          </div>
-        </div>
-
-        <Button
-          size="sm"
-          className="h-8 px-3 text-xs font-semibold rounded-lg gap-1 transition-all"
-          style={{
-            background: "rgba(29,158,117,0.15)",
-            color: "#1D9E75",
-            border: "1px solid rgba(29,158,117,0.25)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(29,158,117,0.3)";
-            e.currentTarget.style.borderColor = "rgba(29,158,117,0.5)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(29,158,117,0.15)";
-            e.currentTarget.style.borderColor = "rgba(29,158,117,0.25)";
-          }}
-        >
-          Aplicar <ArrowRight className="h-3 w-3" />
-        </Button>
-      </div>
-
-      {/* Timestamp */}
-      <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(29,158,117,0.08)" }}>
-        <span className="text-[10px]" style={{ color: "#4a6b5a" }}>
-          {listing.tiempo}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-export default function MarketplaceSection() {
-  const [activeTab, setActiveTab] = useState("disponibles");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-
-  const toggleFilter = (label: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]
-    );
-  };
-
-  return (
-    <div className="p-6">
-      <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar filters */}
-          <aside
-            className="w-full lg:w-64 shrink-0 rounded-xl p-5 self-start lg:sticky lg:top-24"
-            style={{
-              background: "#111f15",
-              border: "0.5px solid rgba(29,158,117,0.15)",
-            }}
-          >
-            {/* Search */}
-            <div
-              className="flex items-center gap-2 rounded-lg px-3 py-2 mb-5"
-              style={{ background: "rgba(29,158,117,0.08)", border: "1px solid rgba(29,158,117,0.12)" }}
-            >
-              <Search className="h-4 w-4" style={{ color: "#5DCAA5" }} />
-              <span className="text-xs" style={{ color: "#6b8f7b" }}>
-                Buscar residuos...
-              </span>
-            </div>
-
-            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#5DCAA5" }}>
-              Tipo de residuo
-            </h3>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {FILTER_TIPOS.map((f) => {
-                const active = selectedFilters.includes(f.label);
-                return (
-                  <button
-                    key={f.label}
-                    onClick={() => toggleFilter(f.label)}
-                    className="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-full transition-all"
-                    style={{
-                      background: active ? "rgba(29,158,117,0.2)" : "rgba(29,158,117,0.06)",
-                      color: active ? "#1D9E75" : "#6b8f7b",
-                      border: `1px solid ${active ? "rgba(29,158,117,0.4)" : "rgba(29,158,117,0.1)"}`,
-                    }}
-                  >
-                    <f.icon className="h-3 w-3" />
-                    {f.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#5DCAA5" }}>
-              Frecuencia
-            </h3>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {["Diaria", "Semanal", "Quincenal", "Mensual", "Única vez"].map((f) => (
-                <span
-                  key={f}
-                  className="text-[11px] px-2.5 py-1.5 rounded-full cursor-pointer transition-all"
-                  style={{
-                    background: "rgba(29,158,117,0.06)",
-                    color: "#6b8f7b",
-                    border: "1px solid rgba(29,158,117,0.1)",
-                  }}
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div
-              className="rounded-lg p-4 mt-2"
-              style={{ background: "rgba(29,158,117,0.06)", border: "1px solid rgba(29,158,117,0.1)" }}
-            >
-              <h4 className="text-[10px] uppercase tracking-wider font-semibold mb-3" style={{ color: "#5DCAA5" }}>
-                Actividad hoy
-              </h4>
-              <div className="space-y-2.5">
-                {[
-                  { icon: FileText, label: "Publicaciones nuevas", value: "23" },
-                  { icon: Users, label: "Gestores activos", value: "87" },
-                  { icon: TrendingUp, label: "Ofertas enviadas", value: "142" },
-                ].map((s) => (
-                  <div key={s.label} className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "#6b8f7b" }}>
-                      <s.icon className="h-3 w-3" /> {s.label}
+            return (
+              <Card key={sol.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-5 space-y-3">
+                  {/* Status + time */}
+                  <div className="flex items-center justify-between">
+                    <Badge variant={sol.status === "con_ofertas" ? "default" : "secondary"} className="text-xs">
+                      {sol.status === "publicada" ? "Publicada" : "Con ofertas"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(sol.created_at), { addSuffix: true, locale: es })}
                     </span>
-                    <span className="text-xs font-bold text-white">{s.value}</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          </aside>
 
-          {/* Main content */}
-          <div className="flex-1 min-w-0">
-            {/* Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-5">
-              <TabsList
-                className="w-full justify-start gap-1 rounded-xl p-1.5 h-auto flex-wrap"
-                style={{ background: "#111f15", border: "0.5px solid rgba(29,158,117,0.15)" }}
-              >
-                {[
-                  { value: "disponibles", label: "Residuos disponibles", count: 156 },
-                  { value: "publicaciones", label: "Mis publicaciones", count: null },
-                  { value: "ofertas", label: "Ofertas recibidas", count: 12 },
-                  { value: "contratos", label: "Contratos activos", count: 3 },
-                ].map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="text-xs font-medium px-3 py-2 rounded-lg transition-all data-[state=active]:shadow-none"
-                    style={{
-                      color: activeTab === tab.value ? "#fff" : "#6b8f7b",
-                      background: activeTab === tab.value ? "rgba(29,158,117,0.2)" : "transparent",
-                    }}
-                  >
-                    {tab.label}
-                    {tab.count !== null && (
-                      <span
-                        className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full font-bold"
-                        style={{
-                          background: activeTab === tab.value ? "rgba(29,158,117,0.3)" : "rgba(29,158,117,0.1)",
-                          color: activeTab === tab.value ? "#1D9E75" : "#4a6b5a",
-                        }}
-                      >
-                        {tab.count}
+                  {/* Residuos list */}
+                  <div className="space-y-2">
+                    {residuos.map((sr: any) => (
+                      <div key={sr.id} className="flex items-start gap-2">
+                        <Badge variant="outline" className={cn("text-[10px] shrink-0 border", categoriaColors[sr.residuos?.categoria] || "")}>
+                          {categoriaIcons[sr.residuos?.categoria] || "📦"} {sr.residuos?.categoria}
+                        </Badge>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{sr.residuos?.nombre}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {sr.cantidad_real} {sr.residuos?.unidad}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Meta info */}
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground pt-1">
+                    {profile?.ciudad && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" /> {profile.ciudad}
                       </span>
                     )}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+                    <span className="flex items-center gap-1">
+                      <CalendarIcon className="h-3 w-3" /> {format(new Date(sol.fecha_preferida), "d MMM yyyy", { locale: es })}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> {sol.rango_horario_inicio?.slice(0, 5)} - {sol.rango_horario_fin?.slice(0, 5)}
+                    </span>
+                  </div>
 
-            {/* Header bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
-              <span className="text-sm" style={{ color: "#6b8f7b" }}>
-                <span className="font-semibold text-white">156</span> residuos disponibles
-              </span>
-              <div className="flex items-center gap-3">
-                <button
-                  className="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg transition-all"
-                  style={{
-                    background: "rgba(29,158,117,0.06)",
-                    color: "#6b8f7b",
-                    border: "1px solid rgba(29,158,117,0.1)",
-                  }}
-                >
-                  <ArrowUpDown className="h-3 w-3" /> Más recientes
-                </button>
-                <Button
-                  className="h-9 px-4 text-xs font-bold rounded-lg gap-1.5"
-                  style={{
-                    background: "#1D9E75",
-                    color: "#fff",
-                  }}
-                >
-                  <Plus className="h-3.5 w-3.5" /> Publicar residuo
-                </Button>
-              </div>
-            </div>
-
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {MOCK_LISTINGS.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-          </div>
+                  {/* Offers count */}
+                  {ofertas > 0 && (
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Users className="h-3 w-3" />
+                      {ofertas} oferta{ofertas !== 1 ? "s" : ""} recibida{ofertas !== 1 ? "s" : ""}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
-      </div>
+      )}
+    </div>
   );
 }
