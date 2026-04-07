@@ -154,7 +154,8 @@ export default function MarketplaceSection() {
 
   const misOfertasMap = useMemo(() => {
     const map: Record<string, any> = {};
-    misOfertas.forEach((o: any) => { map[o.solicitud_id] = o; });
+    const list = Array.isArray(misOfertas) ? misOfertas : [];
+    list.forEach((o: any) => { map[o.solicitud_id] = o; });
     return map;
   }, [misOfertas]);
 
