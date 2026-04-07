@@ -35,7 +35,6 @@ export function RecolectoraSidebar() {
   const items = [
     { title: 'Dashboard', url: '/recolectora', icon: Home, badge: null },
     { title: 'Marketplace', url: '/recolectora/marketplace', icon: Store, badge: solicitudesCount > 0 ? solicitudesCount : null },
-    { title: 'Mis Ofertas', url: '/recolectora/ofertas', icon: Send, badge: null },
     { title: 'Agenda', url: '/recolectora/agenda', icon: CalendarDays, badge: null },
     { title: 'Certificados Emitidos', url: '/recolectora/certificados', icon: Award, badge: null },
     { title: 'Mis Documentos', url: '/recolectora/documentos', icon: FolderOpen, badge: null },

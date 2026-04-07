@@ -617,10 +617,16 @@ export default function MarketplaceSection() {
                         ))}
                       </div>
 
-                      {/* Location + frequency */}
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      {/* Location + date + schedule + frequency */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" /> {profile?.ciudad || "Bogotá"}
+                          <MapPin className="h-3 w-3" /> {sol.direccion_recoleccion || profile?.ciudad || "—"}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <CalendarIcon className="h-3 w-3" /> {format(new Date(sol.fecha_preferida), "dd MMM yyyy", { locale: es })}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Timer className="h-3 w-3" /> {sol.rango_horario_inicio?.slice(0,5)} - {sol.rango_horario_fin?.slice(0,5)}
                         </span>
                         {primaryResiduo?.frecuencia && (
                           <span className="flex items-center gap-1">
@@ -628,6 +634,13 @@ export default function MarketplaceSection() {
                           </span>
                         )}
                       </div>
+
+                      {/* Special instructions */}
+                      {sol.instrucciones_especiales && (
+                        <p className="text-[11px] text-muted-foreground/80 italic line-clamp-1">
+                          📋 {sol.instrucciones_especiales}
+                        </p>
+                      )}
 
                       {/* Bottom row: quantity + avatars + action */}
                       <div className="flex items-center justify-between pt-1 border-t border-border/50">
