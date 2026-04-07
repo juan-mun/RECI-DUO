@@ -331,28 +331,7 @@ export default function MarketplaceSection() {
   };
 
   return (
-    <section className="relative py-20 px-4 overflow-hidden" style={{ background: "#0a1a0f" }}>
-      {/* Subtle glow */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[120px] opacity-20 pointer-events-none"
-        style={{ background: "radial-gradient(circle, #1D9E75 0%, transparent 70%)" }}
-      />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section header */}
-        <div className="text-center mb-12">
-          <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/15">
-            <Zap className="h-3 w-3 mr-1" /> Marketplace en vivo
-          </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Así funciona el{" "}
-            <span style={{ color: "#1D9E75" }}>marketplace</span>
-          </h2>
-          <p className="text-base max-w-2xl mx-auto" style={{ color: "#8ba698" }}>
-            Los generadores publican sus residuos. Los gestores certificados
-            compiten para brindar el mejor servicio. Transparencia total.
-          </p>
-        </div>
+    <div className="p-6">
 
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar filters */}
